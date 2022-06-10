@@ -10,11 +10,39 @@
 - [Installation](#installation)
 - [License](#license)
 
-## Installation
+## Global dependency
 
-```console
-pip install hatch-nodejs-version
+Ensure `hatch-nodejs-version` is defined within the `build-system.requires` field in your `pyproject.toml` file.
+
+```toml
+[build-system]
+requires = ["hatchling", "hatch-nodejs-version"]
+build-backend = "hatchling.build"
 ```
+
+## Version source
+
+The [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/) name is `nodejs`.
+
+- ***pyproject.toml***
+
+    ```toml
+    [tool.hatch.version]
+    source = "nodejs"
+    ```
+
+- ***hatch.toml***
+
+    ```toml
+    [version]
+    source = "nodejs"
+    ```
+
+### Version source options
+
+| Option        | Type | Default       | Description                                |
+|---------------| --- |---------------|--------------------------------------------|
+| `path`        | `str` | `package.json` | Relative path to the `package.json` file. |
 
 ## License
 
