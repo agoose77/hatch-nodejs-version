@@ -1,0 +1,39 @@
+[build-system]
+requires = ["pdm-pep517>=0.12.0"]
+build-backend = "pdm.pep517.api"
+
+[project]
+name = "hatch-nodejs-version"
+version = "0.1.0"
+description = "Hatch plugin for versioning from a package.json file"
+authors = [
+    {name = "Angus Hollands", email = "goosey15@gmail.com"},
+]
+dependencies = []
+requires-python = ">=3.6"
+readme = "README.md"
+license = {text = "MIT"}
+
+[project.optional-dependencies]
+
+[project.entry-points.hatch]
+nodejs = "hatch_nodejs_version.hooks"
+
+[tool.hatch.version]
+path = "hatch_nodejs_version/_version.py"
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+exclude = "extern"
+
+[tool.isort]
+profile = "black"
+
+
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest>=7.0.1",
+]
