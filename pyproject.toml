@@ -31,7 +31,6 @@ exclude = "extern"
 [tool.isort]
 profile = "black"
 
-
 [tool.pdm]
 [tool.pdm.dev-dependencies]
 dev = [

@@ -35,7 +35,9 @@ BAD_PYTHON_VERSIONS = [
 
 class TestDefault:
     @pytest.mark.parametrize(
-        "new_project, python_version", GOOD_NODE_PYTHON_VERSIONS, indirect=["new_project"]
+        "new_project, python_version",
+        GOOD_NODE_PYTHON_VERSIONS,
+        indirect=["new_project"],
     )
     @pytest.mark.parametrize("config", [{"path": "other-package.json"}, {}])
     def test_read_correct(self, new_project, python_version, config):
