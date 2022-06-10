@@ -10,6 +10,7 @@ from hatchling.version.source.plugin.interface import VersionSourceInterface
 # The Python-aware NodeJS version regex
 # This is very similar to `packaging.version.VERSION_PATTERN`, with a few changes:
 # - Don't accept underscores
+# - Only support three-component release and prerelease segments
 # - Require - to indicate prerelease
 NODE_VERSION_PATTERN = r"""
     (?P<major>[0-9]+)                                 # major
@@ -27,8 +28,7 @@ NODE_VERSION_PATTERN = r"""
 
 # The NodeJS-aware Python version regex
 # This is very similar to `packaging.version.VERSION_PATTERN`, with a few changes:
-# - Don't accept epochs or local packages
-# - Require three components
+# - Only support three-component release and prerelease segments
 PYTHON_VERSION_PATTERN = r"""
    v?
    (?:
@@ -52,7 +52,6 @@ class NodeJSVersionSource(VersionSourceInterface):
 
     def node_version_to_python(self, version: str) -> str:
         # NodeJS version strings are a near superset of Python version strings
-        # We opt to read the pre.post.dev from the NodeJS pre field
         match = re.match(
             r"^\s*" + NODE_VERSION_PATTERN + r"\s*$",
             version,
@@ -73,7 +72,6 @@ class NodeJSVersionSource(VersionSourceInterface):
 
     def python_version_to_node(self, version: str) -> str:
         # NodeJS version strings are a near superset of Python version strings
-        # We opt to read the pre.post.dev from the NodeJS pre field
         match = re.match(
             r"^\s*" + PYTHON_VERSION_PATTERN + r"\s*$",
             version,
