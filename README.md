@@ -4,6 +4,9 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hatch-nodejs-version.svg)](https://pypi.org/project/hatch-nodejs-version)
 
 -----
+This provides a plugin for Hatch that uses a `package.json` file to determine (and update) project versions.
+
+As the semver specification only specifies an addition prerelease segment (and build segment) to the release segment, this plugin restricts versions to these segments, i.e. `major.minor.patch-(pre)0`.  
 
 **Table of Contents**
 
