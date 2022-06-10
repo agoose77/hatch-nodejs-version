@@ -23,22 +23,6 @@ NODE_VERSION_PATTERN = r"""
         [-\.]?
         (?P<pre_n>[0-9]+)?
     )?
-    (?P<post>                                         # post release
-    (?:-(?P<post_n1>[0-9]+))
-    |
-    (?:
-        [-\.]?
-        (?P<post_l>post|rev|r)
-        [-\.]?
-        (?P<post_n2>[0-9]+)?
-    )
-    )?
-    (?P<dev>                                              # dev release
-        [-\.]?
-        (?P<dev_l>dev)
-        [-\.]?
-        (?P<dev_n>[0-9]+)?
-    )?
 """
 
 # The NodeJS-aware Python version regex
@@ -58,22 +42,6 @@ PYTHON_VERSION_PATTERN = r"""
            (?P<pre_l>(a|b|c|rc|alpha|beta|pre|preview))
            [-_\.]?
            (?P<pre_n>[0-9]+)?
-       )?
-       (?P<post>                                         # post release
-           (?:-(?P<post_n1>[0-9]+))
-           |
-           (?:
-               [-_\.]?
-               (?P<post_l>post|rev|r)
-               [-_\.]?
-               (?P<post_n2>[0-9]+)?
-           )
-       )?
-       (?P<dev>                                          # dev release
-           [-_\.]?
-           (?P<dev_l>dev)
-           [-_\.]?
-           (?P<dev_n>[0-9]+)?
        )?
    )
 """
@@ -96,13 +64,10 @@ class NodeJSVersionSource(VersionSourceInterface):
         parts = ["{major}.{minor}.{patch}".format_map(match)]
 
         if match["pre"]:
-            parts.append("{pre_l}{pre_n}".format_map(match))
-        if match["post_n1"]:
-            parts.append(".post{post_n1}".format_map(match))
-        elif match["post_l"]:
-            parts.append(".{post_l}{post_n2}".format_map(match))
-        if match["dev"]:
-            parts.append("{dev_l}{dev_n}".format_map(match))
+            if match["pre_n"] is None:
+                parts.append("{pre_l}".format_map(match))
+            else:
+                parts.append("{pre_l}{pre_n}".format_map(match))
 
         return "".join(parts)
 
@@ -115,22 +80,15 @@ class NodeJSVersionSource(VersionSourceInterface):
             re.VERBOSE | re.IGNORECASE,
         )
         if match is None:
-            raise ValueError(f"Version {node_version!r} did not match regex")
+            raise ValueError(f"Version {version!r} did not match regex")
 
         parts = ["{major}.{minor}.{patch}".format_map(match)]
 
-        pre_parts = []
         if match["pre"]:
-            pre_parts.append("{pre_l}{pre_n}".format_map(match))
-        if match["post_n1"]:
-            pre_parts.append(".post{post_n1}".format_map(match))
-        elif match["post_l"]:
-            pre_parts.append(".{post_l}{post_n2}".format_map(match))
-        if match["dev"]:
-            pre_parts.append("{dev_l}{dev_n}".format_map(match))
-
-        if pre_parts:
-            parts.append("-" + "".join(pre_parts))
+            if match["pre_n"] is None:
+                parts.append("-{pre_l}".format_map(match))
+            else:
+                parts.append("-{pre_l}{pre_n}".format_map(match))
 
         return "".join(parts)
 
