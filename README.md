@@ -4,7 +4,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hatch-nodejs-version.svg)](https://pypi.org/project/hatch-nodejs-version)
 
 -----
-This provides a [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/) for Hatch that uses a `package.json` file to determine (and update) project versions.
+This provides a [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/) for Hatch that reads/writes the package version from the `version` field of the NodeJS `package.json` file.
 
 The semver specification defines the following version sections:
 - `major`
