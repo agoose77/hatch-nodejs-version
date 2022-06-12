@@ -4,9 +4,32 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hatch-nodejs-version.svg)](https://pypi.org/project/hatch-nodejs-version)
 
 -----
-This provides a plugin for Hatch that uses a `package.json` file to determine (and update) project versions.
+This provides a [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/) for Hatch that uses a `package.json` file to determine (and update) project versions.
 
-As the semver specification only specifies an addition prerelease segment (and build segment) to the release segment, this plugin restricts versions to these segments, i.e. `major.minor.patch-(pre)0`.  
+The semver specification defines the following version sections:
+- `major`
+- `minor`
+- `patch`
+- `pre-release`
+- `build`
+
+Meanwhile, [PEP 440](https://peps.python.org/pep-0440/#version-scheme) defines:
+- `epoch`
+- `major`
+- `minor`
+- `patch`
+- `pre-release`
+- `post-release`
+- `dev-release`
+
+In order to ensure round-trip support, and ensure semantic consistency between NodeJS and Python, this plugin only accepts the common version parts:
+- `major`
+- `minor`
+- `patch`
+- `pre-release`
+
+e.g. `1.2.3-rc0`.  
+
 
 **Table of Contents**
 
