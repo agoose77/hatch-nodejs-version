@@ -50,7 +50,13 @@ PYTHON_VERSION_PATTERN = r"""
 class NodeJSVersionSource(VersionSourceInterface):
     PLUGIN_NAME = "nodejs"
 
-    def node_version_to_python(self, version: str) -> str:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.__path = None
+
+    @staticmethod
+    def node_version_to_python(version: str) -> str:
         # NodeJS version strings are a near superset of Python version strings
         match = re.match(
             r"^\s*" + NODE_VERSION_PATTERN + r"\s*$",
@@ -70,7 +76,8 @@ class NodeJSVersionSource(VersionSourceInterface):
 
         return "".join(parts)
 
-    def python_version_to_node(self, version: str) -> str:
+    @staticmethod
+    def python_version_to_node(version: str) -> str:
         # NodeJS version strings are a near superset of Python version strings
         match = re.match(
             r"^\s*" + PYTHON_VERSION_PATTERN + r"\s*$",
@@ -90,24 +97,39 @@ class NodeJSVersionSource(VersionSourceInterface):
 
         return "".join(parts)
 
-    def get_version_data(self):
-        relative_path = self.config.get("path", "package.json")
-        if not isinstance(relative_path, str):
-            raise TypeError("option `path` must be a string")
+    @property
+    def path(self):
+        if self.__path is None:
+            version_file = self.config.get("path", "package.json")
+            if not isinstance(version_file, str):
+                raise TypeError(
+                    "Option `path` for build hook `{}` must be a string".format(
+                        self.PLUGIN_NAME
+                    )
+                )
 
-        path = os.path.normpath(os.path.join(self.root, relative_path))
+            self.__path = version_file
+
+        return self.__path
+
+    def get_version_data(self):
+        path = os.path.normpath(os.path.join(self.root, self.path))
         if not os.path.isfile(path):
-            raise OSError(f"file does not exist: {relative_path}")
+            raise OSError(f"file does not exist: {self.path}")
 
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        return {"version": self.node_version_to_python(data["version"]), "path": path}
+        return {"version": self.node_version_to_python(data["version"])}
 
     def set_version(self, version: str, version_data):
-        path = version_data["path"]
+        path = os.path.normpath(os.path.join(self.root, self.path))
+        if not os.path.isfile(path):
+            raise OSError(f"file does not exist: {self.path}")
+
         with open(path, "r") as f:
             data = json.load(f)
+
         data["version"] = self.python_version_to_node(version)
         with open(path, "w") as f:
             json.dump(data, f, indent=4)
