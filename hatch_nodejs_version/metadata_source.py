@@ -92,6 +92,8 @@ class NodeJSMetadataSource(MetadataHookInterface):
     def update(self, metadata: dict[str, Any]):
         package = self.load_package_data()
 
+        metadata["name"] = package["name"]
+
         if "author" in package:
             metadata["author"] = self._parse_person(package["author"])
 
