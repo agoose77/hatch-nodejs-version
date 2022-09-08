@@ -28,6 +28,7 @@ class NodeJSMetadataHook(MetadataHookInterface):
         super().__init__(*args, **kwargs)
 
         self.__path = None
+        self.__fields = None
 
     @property
     def path(self):
@@ -43,6 +44,24 @@ class NodeJSMetadataHook(MetadataHookInterface):
             self.__path = version_file
 
         return self.__path
+
+    @property
+    def fields(self):
+        if self.__fields is None:
+            fields = self.config.get("fields", None)
+            if fields is None:
+                self.__fields = None
+            else:
+                if not (
+                    isinstance(fields, list) and all(isinstance(f, str) for f in fields)
+                ):
+                    raise TypeError(
+                        "Option `fields` for build hook `{}` must be a list of strings".format(
+                            self.PLUGIN_NAME
+                        )
+                    )
+                self.__fields = set(fields)
+        return self.__fields
 
     def load_package_data(self):
         path = os.path.normpath(os.path.join(self.root, self.path))
@@ -92,24 +111,24 @@ class NodeJSMetadataHook(MetadataHookInterface):
     def update(self, metadata: dict[str, Any]):
         package = self.load_package_data()
 
-        metadata["name"] = package["name"]
+        new_metadata = {"name": package["name"]}
 
         if "author" in package:
-            metadata["author"] = self._parse_person(package["author"])
+            new_metadata["author"] = self._parse_person(package["author"])
 
         if "contributors" in package:
-            metadata["maintainers"] = [
+            new_metadata["maintainers"] = [
                 self._parse_person(p) for p in package["contributors"]
             ]
 
         if "keywords" in package:
-            metadata["keywords"] = package["keywords"]
+            new_metadata["keywords"] = package["keywords"]
 
         if "description" in package:
-            metadata["description"] = package["description"]
+            new_metadata["description"] = package["description"]
 
         if "license" in package:
-            metadata["license"] = package["license"]
+            new_metadata["license"] = package["license"]
 
         # Construct URLs
         urls = {}
@@ -124,4 +143,13 @@ class NodeJSMetadataHook(MetadataHookInterface):
 
         # Write URLs
         if urls:
-            metadata["urls"] = urls
+            new_metadata["urls"] = urls
+
+        # Only use required metadata
+        metadata.update(
+            {
+                k: v
+                for k, v in new_metadata.items()
+                if (self.fields is None or k in self.fields)
+            }
+        )
