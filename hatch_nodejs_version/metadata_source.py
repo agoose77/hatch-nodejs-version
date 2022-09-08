@@ -67,7 +67,10 @@ class NodeJSMetadataSource(MetadataHookInterface):
             if "email" in person:
                 result["email"] = person["email"]
         else:
-            name, email, _ = re.match(AUTHOR_PATTERN, person["name"])
+            match = re.match(AUTHOR_PATTERN, person["name"])
+            if match is None:
+                raise ValueError(f"Invalid author name: {person['name']}")
+            name, email, _ = match.groups()
             result = {"name": name}
             if email is not None:
                 result["email"] = email
@@ -76,7 +79,10 @@ class NodeJSMetadataSource(MetadataHookInterface):
 
     def _parse_repository(self, repository: str | dict[str, str]) -> str:
         if isinstance(repository, str):
-            kind, identifier = re.match(REPOSITORY_PATTERN, repository)
+            match = re.match(REPOSITORY_PATTERN, repository)
+            if match is None:
+                raise ValueError(f"Invalid repository string: {repository}")
+            kind, identifier = match.groups()
             if kind is None:
                 kind = "github"
             return urllib.parse.urljoin(REPOSITORY_TABLE[kind], identifier)
