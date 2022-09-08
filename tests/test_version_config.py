@@ -72,9 +72,9 @@ class TestVersion:
         # Create a simple project
         (project / "pyproject.toml").write_text(
             """
-[build - system]
+[build-system]
 requires = ["hatchling", "hatch-vcs"]
-build - backend = "hatchling.build"
+build-backend = "hatchling.build"
 [project]
 name = "my-app"
 dynamic = ["version"]
@@ -110,9 +110,9 @@ source = "nodejs"
         package_json = "package.json" if alt_package_json is None else alt_package_json
         (project / "pyproject.toml").write_text(
             """
-[build - system]
+[build-system]
 requires = ["hatchling", "hatch-vcs"]
-build - backend = "hatchling.build"
+build-backend = "hatchling.build"
 [project]
 name = "my-app"
 dynamic = ["version"]

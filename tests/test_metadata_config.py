@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 import pytest
 
-from hatch_nodejs_version.metadata_source import NodeJSMetadataSource
+from hatch_nodejs_version.metadata_source import NodeJSMetadataHook
 
 
 class TestMetadata:
@@ -19,9 +19,9 @@ class TestMetadata:
         # Create a simple project
         (project / "pyproject.toml").write_text(
             f"""
-[build - system]
+[build-backend]
 requires = ["hatchling", "hatch-vcs"]
-build - backend = "hatchling.build"
+build-backend = "hatchling.build"
 [project]
 name = "my-app"
 version = "0.0.0"
@@ -65,7 +65,7 @@ version = "0.0.0"
 """
         )
         config = {} if alt_package_json is None else {"path": alt_package_json}
-        metadata_source = NodeJSMetadataSource(project, config=config)
+        metadata_source = NodeJSMetadataHook(project, config=config)
 
         metadata = {}
         metadata_source.update(metadata)
