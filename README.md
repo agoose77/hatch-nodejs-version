@@ -47,6 +47,29 @@ The [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/
 |---------------| --- |---------------|--------------------------------------------|
 | `path`        | `str` | `package.json` | Relative path to the `package.json` file. |
 
+
+## Metadata hook
+
+The [metadata hook plugin](https://hatch.pypa.io/dev/plugins/metadata-hook/reference/) name is `nodejs`.
+
+- ***pyproject.toml***
+
+    ```toml
+    [tool.hatch.metadata.hooks.nodejs]
+    ```
+
+- ***hatch.toml***
+
+    ```toml
+    [metadata.hooks.nodejs]
+    ```
+
+### Version source options
+
+| Option   | Type            | Default | Description                                                         |
+|----------|-----------------|---------|---------------------------------------------------------------------|
+| `fields` | `list` of `str` | None    | Optional list of fields to take from the generated metadata object. |
+
 ## License
 
 `hatch-nodejs-version` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
