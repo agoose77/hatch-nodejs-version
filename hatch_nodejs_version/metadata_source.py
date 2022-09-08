@@ -4,12 +4,12 @@
 from __future__ import annotations
 
 import json
-import re
 import os.path
+import re
 import urllib.parse
+from typing import Any
 
 from hatchling.metadata.plugin.interface import MetadataHookInterface
-
 
 AUTHOR_PATTERN = r"^([^<(]+?)?[ \t]*(?:<([^>(]+?)>)?[ \t]*(?:\(([^)]+?)\)|$)"
 REPOSITORY_PATTERN = r"^(?:(gist|bitbucket|gitlab|github):)?(.*?)$"
@@ -52,6 +52,15 @@ class NodeJSMetadataSource(MetadataHookInterface):
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
 
+    def _parse_bugs(self, bugs: str | dict[str, str]) -> str | None:
+        if isinstance(bugs, str):
+            return bugs
+
+        if "url" not in bugs:
+            return None
+
+        return bugs["url"]
+
     def _parse_person(self, person: dict[str, str]) -> dict[str, str]:
         if {"url", "email"} & person.keys():
             result = {"name": person["name"]}
@@ -74,7 +83,7 @@ class NodeJSMetadataSource(MetadataHookInterface):
 
         return repository["url"]
 
-    def update(self, metadata):
+    def update(self, metadata: dict[str, Any]):
         package = self.load_package_data()
 
         if "author" in package:
@@ -99,7 +108,9 @@ class NodeJSMetadataSource(MetadataHookInterface):
         if "homepage" in package:
             urls["homepage"] = package["homepage"]
         if "bugs" in package:
-            urls["bug tracker"] = package["bugs"]
+            bugs_url = self._parse_bugs(package["bugs"])
+            if bugs_url is not None:
+                urls["bug tracker"] = bugs_url
         if "repository" in package:
             urls["repository"] = self._parse_repository(package["repository"])
 

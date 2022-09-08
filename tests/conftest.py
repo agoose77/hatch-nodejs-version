@@ -55,7 +55,8 @@ def create_project(directory, metadata, version):
     package = f"""
 {{
   "name": "my-awesome-package",
-  "version": "{version}"
+  "version": "{version}",
+  
 }}
     """
     create_file(package_file, package)
