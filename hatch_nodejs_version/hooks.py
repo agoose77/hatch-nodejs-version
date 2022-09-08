@@ -4,7 +4,7 @@
 from hatchling.plugin import hookimpl
 
 from .version_source import NodeJSVersionSource
-from .metadata_source import NodeJSMetadataSource
+from .metadata_source import NodeJSMetadataHook
 
 
 @hookimpl
@@ -13,5 +13,5 @@ def hatch_register_version_source():
 
 
 @hookimpl
-def hatch_register_metadata_source():
-    return NodeJSMetadataSource
+def hatch_register_metadata_hook():
+    return NodeJSMetadataHook

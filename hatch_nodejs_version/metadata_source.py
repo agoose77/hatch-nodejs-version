@@ -21,7 +21,7 @@ REPOSITORY_TABLE = {
 }
 
 
-class NodeJSMetadataSource(MetadataHookInterface):
+class NodeJSMetadataHook(MetadataHookInterface):
     PLUGIN_NAME = "nodejs"
 
     def __init__(self, *args, **kwargs):
