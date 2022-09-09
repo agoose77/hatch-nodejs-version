@@ -95,9 +95,12 @@ The [metadata hook plugin](https://hatch.pypa.io/dev/plugins/metadata-hook/refer
 
 ### Metadata hook options
 
-| Option   | Type            | Default | Description                                                         |
-|----------|-----------------|---------|---------------------------------------------------------------------|
-| `fields` | `list` of `str` | None    | Optional list of fields to take from the generated metadata object. |
+| Option                        | Type            | Default        | Description                                                                                                |
+|-------------------------------|-----------------|----------------|------------------------------------------------------------------------------------------------------------|
+| `path`                        | `str`           | `package.json` | Relative path to the `package.json` file.                                                                  |
+| `fields`                      | `list` of `str` | `None`         | Optional list of fields to take from the generated metadata object.                                        |
+| `contributors-as-maintainers` | `bool`          | `True`         | Whether contributors in `package.json` should be considered maintainers (otherwise, treat them as authors) |
+
 
 ## License
 
