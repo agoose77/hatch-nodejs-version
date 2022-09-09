@@ -31,7 +31,7 @@ class NodeJSMetadataHook(MetadataHookInterface):
         self.__fields = None
 
     @property
-    def path(self):
+    def path(self) -> str:
         if self.__path is None:
             version_file = self.config.get("path", "package.json")
             if not isinstance(version_file, str):
@@ -46,7 +46,7 @@ class NodeJSMetadataHook(MetadataHookInterface):
         return self.__path
 
     @property
-    def fields(self):
+    def fields(self) -> None | set[str]:
         if self.__fields is None:
             fields = self.config.get("fields", None)
             if fields is None:
