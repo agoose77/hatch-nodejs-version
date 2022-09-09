@@ -7,35 +7,11 @@
 -----
 This provides a [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/) for Hatch that reads/writes the package version from the `version` field of the NodeJS `package.json` file.
 
-The semver specification defines the following version sections:
-- `major`
-- `minor`
-- `patch`
-- `pre-release`
-- `build`
-
-Meanwhile, [PEP 440](https://peps.python.org/pep-0440/#version-scheme) defines:
-- `epoch`
-- `major`
-- `minor`
-- `patch`
-- `pre-release`
-- `post-release`
-- `dev-release`
-
-In order to ensure round-trip support, and ensure semantic consistency between NodeJS and Python, this plugin only accepts the common version parts:
-- `major`
-- `minor`
-- `patch`
-- `pre-release`
-
-e.g. `1.2.3-rc0`.  
-
 
 **Table of Contents**
 
 - [Installation](#installation)
-- [Global dependency](#global-dependency)
+- [Global dependency](#global-dependency)]
 - [Version source](#version-source)
 - [Metadata hook](#metadata-hook)
 - [License](#license)
@@ -67,6 +43,32 @@ The [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/
     [version]
     source = "nodejs"
     ```
+  
+### Semver
+
+The semver specification defines the following version sections:
+- `major`
+- `minor`
+- `patch`
+- `pre-release`
+- `build`
+
+Meanwhile, [PEP 440](https://peps.python.org/pep-0440/#version-scheme) defines:
+- `epoch`
+- `major`
+- `minor`
+- `patch`
+- `pre-release`
+- `post-release`
+- `dev-release`
+
+In order to ensure round-trip support, and ensure semantic consistency between NodeJS and Python, this plugin only accepts the common version parts:
+- `major`
+- `minor`
+- `patch`
+- `pre-release`
+
+e.g. `1.2.3-rc0`.  
 
 ### Version source options
 
@@ -91,7 +93,7 @@ The [metadata hook plugin](https://hatch.pypa.io/dev/plugins/metadata-hook/refer
     [metadata.hooks.nodejs]
     ```
 
-### Version source options
+### Metadata hook options
 
 | Option   | Type            | Default | Description                                                         |
 |----------|-----------------|---------|---------------------------------------------------------------------|
