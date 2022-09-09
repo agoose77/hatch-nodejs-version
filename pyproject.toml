@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hatch-nodejs-version"
-version = "0.2.0"
+version = "0.2.1"
 description = "Hatch plugin for versioning from a package.json file"
 authors = [
     {name = "Angus Hollands", email = "goosey15@gmail.com"},
