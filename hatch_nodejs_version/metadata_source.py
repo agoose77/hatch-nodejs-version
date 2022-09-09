@@ -29,6 +29,7 @@ class NodeJSMetadataHook(MetadataHookInterface):
 
         self.__path = None
         self.__fields = None
+        self.__contributors_as_maintainers = None
 
     @property
     def path(self) -> str:
@@ -62,6 +63,14 @@ class NodeJSMetadataHook(MetadataHookInterface):
                     )
                 self.__fields = set(fields)
         return self.__fields
+
+    @property
+    def contributors_as_maintainers(self) -> bool:
+        if self.__contributors_as_maintainers is None:
+            self.__contributors_as_maintainers = self.config.get(
+                "contributors-as-maintainers", True
+            )
+        return self.__contributors_as_maintainers
 
     def load_package_data(self):
         path = os.path.normpath(os.path.join(self.root, self.path))
@@ -114,16 +123,25 @@ class NodeJSMetadataHook(MetadataHookInterface):
         new_metadata = {"name": package["name"]}
 
         authors = None
+        maintainers = None
 
         if "author" in package:
             authors = [self._parse_person(package["author"])]
 
         if "contributors" in package:
-            new_metadata["maintainers"] = [
+            contributors = [
                 self._parse_person(p) for p in package["contributors"]
             ]
+            if self.contributors_as_maintainers:
+                maintainers = contributors
+            else:
+                authors = [*(authors or []), *contributors]
+
         if authors is not None:
             new_metadata['authors'] = authors
+
+        if maintainers is not None:
+            new_metadata['maintainers'] = maintainers
 
         if "keywords" in package:
             new_metadata["keywords"] = package["keywords"]
