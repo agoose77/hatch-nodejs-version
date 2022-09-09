@@ -35,6 +35,9 @@ e.g. `1.2.3-rc0`.
 **Table of Contents**
 
 - [Installation](#installation)
+- [Global dependency](#global-dependency)
+- [Version source](#version-source)
+- [Metadata hook](#metadata-hook)
 - [License](#license)
 
 ## Global dependency
