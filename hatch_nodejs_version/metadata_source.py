@@ -113,13 +113,17 @@ class NodeJSMetadataHook(MetadataHookInterface):
 
         new_metadata = {"name": package["name"]}
 
+        authors = None
+
         if "author" in package:
-            new_metadata["author"] = self._parse_person(package["author"])
+            authors = [self._parse_person(package["author"])]
 
         if "contributors" in package:
             new_metadata["maintainers"] = [
                 self._parse_person(p) for p in package["contributors"]
             ]
+        if authors is not None:
+            new_metadata['authors'] = authors
 
         if "keywords" in package:
             new_metadata["keywords"] = package["keywords"]
