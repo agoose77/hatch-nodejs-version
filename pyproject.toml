@@ -10,7 +10,7 @@ authors = [
     {name = "Angus Hollands", email = "goosey15@gmail.com"},
 ]
 dependencies = []
-requires-python = ">=3.6"
+requires-python = ">= 3.7"
 readme = "README.md"
 license = {text = "MIT"}
 
