@@ -11,7 +11,7 @@ This provides a [version source plugin](https://hatch.pypa.io/latest/plugins/ver
 **Table of Contents**
 
 - [Installation](#installation)
-- [Global dependency](#global-dependency)]
+- [Global dependency](#global-dependency)
 - [Version source](#version-source)
 - [Metadata hook](#metadata-hook)
 - [License](#license)
