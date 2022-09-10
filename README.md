@@ -7,7 +7,7 @@
 -----
 This package provides two Hatch plugins:
 - [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/) that reads/writes the package version from the `version` field of the NodeJS `package.json` file.
-- [metadata hook plugin](https://hatch.pypa.io/latest/plugins/version-source/) that reads PEP 621 metadata from the NodeJS `package.json` file.
+- [metadata hook plugin](https://hatch.pypa.io/latest/plugins/metadata-hook/) that reads PEP 621 metadata from the NodeJS `package.json` file.
 
 
 **Table of Contents**
