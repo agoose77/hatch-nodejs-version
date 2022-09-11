@@ -5,7 +5,9 @@
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 
 -----
-This provides a [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/) for Hatch that reads/writes the package version from the `version` field of the NodeJS `package.json` file.
+This package provides two Hatch plugins:
+- [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/) that reads/writes the package version from the `version` field of the NodeJS `package.json` file.
+- [metadata hook plugin](https://hatch.pypa.io/latest/plugins/metadata-hook/) that reads PEP 621 metadata from the NodeJS `package.json` file.
 
 
 **Table of Contents**
