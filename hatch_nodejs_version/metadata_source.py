@@ -30,6 +30,9 @@ class NodeJSMetadataHook(MetadataHookInterface):
         self.__path = None
         self.__fields = None
         self.__contributors_as_maintainers = None
+        self.__homepage_label = None
+        self.__bugs_label = None
+        self.__repository_label = None
 
     @property
     def path(self) -> str:
@@ -57,9 +60,8 @@ class NodeJSMetadataHook(MetadataHookInterface):
                     isinstance(fields, list) and all(isinstance(f, str) for f in fields)
                 ):
                     raise TypeError(
-                        "Option `fields` for build hook `{}` must be a list of strings".format(
-                            self.PLUGIN_NAME
-                        )
+                        "Option `fields` for build hook `{}` "
+                        "must be a list of strings".format(self.PLUGIN_NAME)
                     )
                 self.__fields = set(fields)
         return self.__fields
@@ -72,12 +74,51 @@ class NodeJSMetadataHook(MetadataHookInterface):
             )
             if not isinstance(contributors_as_maintainers, bool):
                 raise TypeError(
-                    "Option `contributors-as-maintainers` for build hook `{}` must be a boolean".format(
-                        self.PLUGIN_NAME
-                    )
+                    "Option `contributors-as-maintainers` for build hook `{}` "
+                    "must be a boolean".format(self.PLUGIN_NAME)
                 )
             self.__contributors_as_maintainers = contributors_as_maintainers
         return self.__contributors_as_maintainers
+
+    @property
+    def homepage_label(self) -> bool:
+        if self.__homepage_label is None:
+            homepage_label = self.config.get("homepage-label", "Homepage")
+
+            if not isinstance(homepage_label, str):
+                raise TypeError(
+                    "Option `homepage-label` for build hook `{}` "
+                    "must be a string".format(self.PLUGIN_NAME)
+                )
+            self.__homepage_label = homepage_label
+        return self.__homepage_label
+
+    @property
+    def bugs_label(self) -> bool:
+        if self.__bugs_label is None:
+            bug_tracker_label = self.config.get("bugs-label", "Bug Tracker")
+
+            if not isinstance(bug_tracker_label, str):
+                raise TypeError(
+                    "Option `bugs-label` for build hook `{}` must be a string".format(
+                        self.PLUGIN_NAME
+                    )
+                )
+            self.__bugs_label = bug_tracker_label
+        return self.__bugs_label
+
+    @property
+    def repository_label(self) -> bool:
+        if self.__repository_label is None:
+            bug_tracker_label = self.config.get("repository-label", "Repository")
+
+            if not isinstance(bug_tracker_label, str):
+                raise TypeError(
+                    "Option `repository-label` for build hook `{}` "
+                    "must be a string".format(self.PLUGIN_NAME)
+                )
+            self.__repository_label = bug_tracker_label
+        return self.__repository_label
 
     def load_package_data(self):
         path = os.path.normpath(os.path.join(self.root, self.path))
@@ -136,19 +177,17 @@ class NodeJSMetadataHook(MetadataHookInterface):
             authors = [self._parse_person(package["author"])]
 
         if "contributors" in package:
-            contributors = [
-                self._parse_person(p) for p in package["contributors"]
-            ]
+            contributors = [self._parse_person(p) for p in package["contributors"]]
             if self.contributors_as_maintainers:
                 maintainers = contributors
             else:
                 authors = [*(authors or []), *contributors]
 
         if authors is not None:
-            new_metadata['authors'] = authors
+            new_metadata["authors"] = authors
 
         if maintainers is not None:
-            new_metadata['maintainers'] = maintainers
+            new_metadata["maintainers"] = maintainers
 
         if "keywords" in package:
             new_metadata["keywords"] = package["keywords"]
@@ -162,13 +201,13 @@ class NodeJSMetadataHook(MetadataHookInterface):
         # Construct URLs
         urls = {}
         if "homepage" in package:
-            urls["homepage"] = package["homepage"]
+            urls[self.homepage_label] = package["homepage"]
         if "bugs" in package:
             bugs_url = self._parse_bugs(package["bugs"])
             if bugs_url is not None:
-                urls["bug tracker"] = bugs_url
+                urls[self.bugs_label] = bugs_url
         if "repository" in package:
-            urls["repository"] = self._parse_repository(package["repository"])
+            urls[self.repository_label] = self._parse_repository(package["repository"])
 
         # Write URLs
         if urls:
