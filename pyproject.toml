@@ -29,6 +29,11 @@ dynamic = ["version"]
 [project.entry-points.hatch]
 nodejs = "hatch_nodejs_version.hooks"
 
+[project.urls]
+Homepage = "https://github.com/agoose77/hatch-nodejs-version"
+"Issue Tracker" = "https://github.com/agoose77/hatch-nodejs-version/issues"
+"Source Code" = "https://github.com/agoose77/hatch-nodejs-version"
+
 [tool.hatch.version]
 path = "hatch_nodejs_version/_version.py"
 
