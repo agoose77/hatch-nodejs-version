@@ -5,7 +5,6 @@ import pytest
 
 from hatch_nodejs_version.metadata_source import NodeJSMetadataHook
 
-
 TRIVIAL_PYPROJECT_CONTENTS = """
 [build-backend]
 requires = ["hatchling", "hatch-vcs"]
@@ -16,7 +15,7 @@ version = "0.0.0"
 [tool.hatch.metadata.hooks.nodejs]
 """
 
-DEMO_PACKAGE_CONTENTS = """
+TRIVIAL_PACKAGE_CONTENTS = """
 {
   "name": "my-app",
   "version": "1.0.0",
@@ -50,12 +49,12 @@ DEMO_PACKAGE_CONTENTS = """
 }
 """
 
-EXPECTED_METADATA = {
+TRIVIAL_EXPECTED_METADATA = {
     "license": "MIT",
     "urls": {
-        "bug tracker": "https://www.send-help.com",
-        "repository": "https://github.com/some/code.git",
-        "homepage": "https://where-the-heart-is.com",
+        "Bug Tracker": "https://www.send-help.com",
+        "Repository": "https://github.com/some/code.git",
+        "Homepage": "https://where-the-heart-is.com",
     },
     "authors": [
         {
@@ -79,14 +78,14 @@ class TestMetadata:
         # Create a simple project
         package_json = "package.json" if alt_package_json is None else alt_package_json
         (project / "pyproject.toml").write_text(TRIVIAL_PYPROJECT_CONTENTS)
-        (project / package_json).write_text(DEMO_PACKAGE_CONTENTS)
+        (project / package_json).write_text(TRIVIAL_PACKAGE_CONTENTS)
 
         config = {} if alt_package_json is None else {"path": alt_package_json}
         metadata = {}
         metadata_source = NodeJSMetadataHook(project, config=config)
         metadata_source.update(metadata)
 
-        assert metadata == EXPECTED_METADATA
+        assert metadata == TRIVIAL_EXPECTED_METADATA
 
     @pytest.mark.parametrize(
         "pyproject_field",
@@ -103,7 +102,7 @@ class TestMetadata:
     def test_subset_metadata(self, project, pyproject_field):
         # Create a simple project
         (project / "pyproject.toml").write_text(TRIVIAL_PYPROJECT_CONTENTS)
-        (project / "package.json").write_text(DEMO_PACKAGE_CONTENTS)
+        (project / "package.json").write_text(TRIVIAL_PACKAGE_CONTENTS)
 
         config = {"fields": [pyproject_field]}
 
@@ -113,12 +112,12 @@ class TestMetadata:
 
         assert pyproject_field in metadata
         assert len(metadata) == len(config["fields"])
-        assert metadata[pyproject_field] == EXPECTED_METADATA[pyproject_field]
+        assert metadata[pyproject_field] == TRIVIAL_EXPECTED_METADATA[pyproject_field]
 
     def test_contributors_as_maintainers(self, project):
         # Create a simple project
         (project / "pyproject.toml").write_text(TRIVIAL_PYPROJECT_CONTENTS)
-        (project / "package.json").write_text(DEMO_PACKAGE_CONTENTS)
+        (project / "package.json").write_text(TRIVIAL_PACKAGE_CONTENTS)
 
         metadata = {}
         metadata_source = NodeJSMetadataHook(
@@ -126,13 +125,13 @@ class TestMetadata:
         )
         metadata_source.update(metadata)
 
-        assert metadata["authors"] == EXPECTED_METADATA["authors"]
-        assert metadata["maintainers"] == EXPECTED_METADATA["maintainers"]
+        assert metadata["authors"] == TRIVIAL_EXPECTED_METADATA["authors"]
+        assert metadata["maintainers"] == TRIVIAL_EXPECTED_METADATA["maintainers"]
 
     def test_contributors_as_authors(self, project):
         # Create a simple project
         (project / "pyproject.toml").write_text(TRIVIAL_PYPROJECT_CONTENTS)
-        (project / "package.json").write_text(DEMO_PACKAGE_CONTENTS)
+        (project / "package.json").write_text(TRIVIAL_PACKAGE_CONTENTS)
 
         metadata = {}
         metadata_source = NodeJSMetadataHook(
@@ -142,5 +141,27 @@ class TestMetadata:
 
         assert (
             metadata["authors"]
-            == EXPECTED_METADATA["authors"] + EXPECTED_METADATA["maintainers"]
+            == TRIVIAL_EXPECTED_METADATA["authors"]
+            + TRIVIAL_EXPECTED_METADATA["maintainers"]
         )
+
+    def test_labels(self, project):
+        # Create a simple project
+        (project / "pyproject.toml").write_text(TRIVIAL_PYPROJECT_CONTENTS)
+        (project / "package.json").write_text(TRIVIAL_PACKAGE_CONTENTS)
+
+        metadata = {}
+        metadata_source = NodeJSMetadataHook(
+            project,
+            config={
+                "repository-label": "the-repository",
+                "bugs-label": "the-bug-tracker",
+                "homepage-label": "the-homepage",
+            },
+        )
+        metadata_source.update(metadata)
+
+        urls = metadata["urls"]
+        assert urls["the-repository"] == "https://github.com/some/code.git"
+        assert urls["the-bug-tracker"] == "https://www.send-help.com"
+        assert urls["the-homepage"] == "https://where-the-heart-is.com"
