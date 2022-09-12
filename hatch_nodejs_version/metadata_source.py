@@ -67,9 +67,16 @@ class NodeJSMetadataHook(MetadataHookInterface):
     @property
     def contributors_as_maintainers(self) -> bool:
         if self.__contributors_as_maintainers is None:
-            self.__contributors_as_maintainers = self.config.get(
+            contributors_as_maintainers = self.config.get(
                 "contributors-as-maintainers", True
             )
+            if not isinstance(contributors_as_maintainers, bool):
+                raise TypeError(
+                    "Option `contributors-as-maintainers` for build hook `{}` must be a boolean".format(
+                        self.PLUGIN_NAME
+                    )
+                )
+            self.__contributors_as_maintainers = contributors_as_maintainers
         return self.__contributors_as_maintainers
 
     def load_package_data(self):
