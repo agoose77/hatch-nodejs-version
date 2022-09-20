@@ -79,6 +79,21 @@ class NodeJSVersionSource(VersionSourceInterface):
 
         self.__path = None
 
+    @property
+    def path(self):
+        if self.__path is None:
+            version_file = self.config.get("path", "package.json")
+            if not isinstance(version_file, (str, bytes, os.PathLike)):
+                raise TypeError(
+                    "Option `path` for version source `{}` must be a string".format(
+                        self.PLUGIN_NAME
+                    )
+                )
+
+            self.__path = os.fspath(version_file)
+
+        return self.__path
+
     @staticmethod
     def node_version_to_python(version: str) -> str:
         # NodeJS version strings are a near superset of Python version strings
@@ -125,21 +140,6 @@ class NodeJSVersionSource(VersionSourceInterface):
         if match["local"]:
             parts.append("+{local}".format_map(match))
         return "".join(parts)
-
-    @property
-    def path(self):
-        if self.__path is None:
-            version_file = self.config.get("path", "package.json")
-            if not isinstance(version_file, str):
-                raise TypeError(
-                    "Option `path` for build hook `{}` must be a string".format(
-                        self.PLUGIN_NAME
-                    )
-                )
-
-            self.__path = version_file
-
-        return self.__path
 
     def get_version_data(self):
         path = os.path.normpath(os.path.join(self.root, self.path))
