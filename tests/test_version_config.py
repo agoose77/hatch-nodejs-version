@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 2022-present Angus Hollands <goosey15@gmail.com>
 #
 # SPDX-License-Identifier: MIT
-import pytest
 import json
+
+import pytest
 
 from hatch_nodejs_version.version_source import NodeJSVersionSource
 
@@ -17,6 +18,9 @@ GOOD_NODE_PYTHON_VERSIONS = [
     ("1.4.5-beta0", "1.4.5beta0"),
     ("1.4.5-pre9", "1.4.5pre9"),
     ("1.4.5-preview0", "1.4.5preview0"),
+    ("1.4.5-preview0+build1.0.0", "1.4.5preview0+build1.0.0"),
+    ("1.4.5-preview0+build-1.0.0", "1.4.5preview0+build-1.0.0"),
+    ("1.4.5-preview0+build-1_0.0", "1.4.5preview0+build-1_0.0"),
 ]
 
 BAD_NODE_VERSIONS = [
@@ -24,12 +28,16 @@ BAD_NODE_VERSIONS = [
     "1.4.5a0",
     "1.4.5-c0.post1",
     "1.4.5-rc0.post1.dev2",
+    "1.4.5-rc0.post1+-bad",
+    "1.4.5-rc0.post1+bad_",
 ]
 BAD_PYTHON_VERSIONS = [
     "1.4",
     "1.4.5ab",
     "1.4.5-c0.smoke2",
     "1.4.5rc.post1@dev2",
+    "1.4.5rc0.post1+-bad",
+    "1.4.5rc0.post1+bad_",
 ]
 
 
@@ -54,7 +62,7 @@ class TestVersion:
         "node_version",
         BAD_NODE_VERSIONS,
     )
-    def test_parse_python_incorrect(self, node_version):
+    def test_parse_node_incorrect(self, node_version):
         with pytest.raises(ValueError, match=".* did not match regex"):
             NodeJSVersionSource.node_version_to_python(node_version)
 
@@ -79,7 +87,7 @@ build-backend = "hatchling.build"
 name = "my-app"
 dynamic = ["version"]
 [tool.hatch.version]
-source = "nodejs" 
+source = "nodejs"
  """
         )
         package_json = "package.json" if alt_package_json is None else alt_package_json
@@ -94,7 +102,7 @@ source = "nodejs"
         config = {} if alt_package_json is None else {"path": alt_package_json}
         version_source = NodeJSVersionSource(project, config=config)
         data = version_source.get_version_data()
-        assert data['version'] == python_version
+        assert data["version"] == python_version
 
     @pytest.mark.parametrize(
         "node_version, python_version",
@@ -117,15 +125,15 @@ build-backend = "hatchling.build"
 name = "my-app"
 dynamic = ["version"]
 [tool.hatch.version]
-source = "nodejs" 
+source = "nodejs"
  """
         )
         (project / package_json).write_text(
-            f"""
-{{
+            """
+{
   "name": "my-app",
   "version": "0.0.0"
-}}
+}
 """
         )
         config = {} if alt_package_json is None else {"path": alt_package_json}
@@ -134,5 +142,4 @@ source = "nodejs"
         version_source.set_version(python_version, version_data)
 
         written_package = json.loads((project / package_json).read_text())
-        assert written_package['version'] == node_version
-
+        assert written_package["version"] == node_version
