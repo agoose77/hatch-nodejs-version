@@ -20,51 +20,70 @@ GOOD_NODE_PYTHON_VERSIONS = [
     ("1.4.5-preview0", "1.4.5preview0"),
     ("1.4.5-preview0+build1.0.0", "1.4.5preview0+build1.0.0"),
     ("1.4.5-preview0+build-1.0.0", "1.4.5preview0+build-1.0.0"),
-    ("1.4.5-preview0+build-1_0.0", "1.4.5preview0+build-1_0.0"),
-]
-
-BAD_NODE_VERSIONS = [
-    "1.4",
-    "1.4.5a0",
-    "1.4.5-c0.post1",
-    "1.4.5-rc0.post1.dev2",
-    "1.4.5-rc0.post1+-bad",
-    "1.4.5-rc0.post1+bad_",
-]
-BAD_PYTHON_VERSIONS = [
-    "1.4",
-    "1.4.5ab",
-    "1.4.5-c0.smoke2",
-    "1.4.5rc.post1@dev2",
-    "1.4.5rc0.post1+-bad",
-    "1.4.5rc0.post1+bad_",
+    ("1.4.5-preview0+good-1_0.0", "1.4.5preview0+good-1_0.0"),
 ]
 
 
 class TestVersion:
     @pytest.mark.parametrize(
-        "node_version, python_version",
-        GOOD_NODE_PYTHON_VERSIONS,
-    )
-    def test_parse_correct(self, node_version, python_version):
-        node_version_parsed = NodeJSVersionSource.python_version_to_node(python_version)
-        assert node_version_parsed == node_version
-
-    @pytest.mark.parametrize(
         "python_version",
-        BAD_PYTHON_VERSIONS,
+        [
+            "1.4",
+            "1.4.5ab",
+            "1.4.5-c0.smoke2",
+            "1.4.5rc.post1@dev2",
+            "1.4.5rc0.post1+-bad",
+            "1.4.5rc0.post1+bad_",
+        ],
     )
-    def test_parse_python_incorrect(self, python_version):
+    def test_parse_python_incorrect(self, project, python_version):
+        # Create a simple project
+        (project / "pyproject.toml").write_text(
+            """
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+[project]
+name = "my-app"
+dynamic = ["version"]
+[tool.hatch.version]
+source = "nodejs"
+ """
+        )
+        config = {}
+        version_source = NodeJSVersionSource(project, config=config)
         with pytest.raises(ValueError, match=".* did not match regex"):
-            NodeJSVersionSource.python_version_to_node(python_version)
+            version_source.python_version_to_node(python_version)
 
     @pytest.mark.parametrize(
         "node_version",
-        BAD_NODE_VERSIONS,
+        [
+            "1.4",
+            "1.4.5a0",
+            "1.4.5-c0.post1",
+            "1.4.5-rc0.post1.dev2",
+            "1.4.5-rc0.post1+-bad",
+            "1.4.5-rc0.post1+bad_",
+        ],
     )
-    def test_parse_node_incorrect(self, node_version):
+    def test_parse_node_incorrect(self, project, node_version):
+        # Create a simple project
+        (project / "pyproject.toml").write_text(
+            """
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+[project]
+name = "my-app"
+dynamic = ["version"]
+[tool.hatch.version]
+source = "nodejs"
+ """
+        )
+        config = {}
+        version_source = NodeJSVersionSource(project, config=config)
         with pytest.raises(ValueError, match=".* did not match regex"):
-            NodeJSVersionSource.node_version_to_python(node_version)
+            version_source.node_version_to_python(node_version)
 
     @pytest.mark.parametrize(
         "node_version, python_version",

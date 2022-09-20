@@ -94,8 +94,7 @@ class NodeJSVersionSource(VersionSourceInterface):
 
         return self.__path
 
-    @staticmethod
-    def node_version_to_python(version: str) -> str:
+    def node_version_to_python(self, version: str) -> str:
         # NodeJS version strings are a near superset of Python version strings
         match = re.match(
             r"^\s*" + NODE_VERSION_PATTERN + r"\s*$",
@@ -118,8 +117,7 @@ class NodeJSVersionSource(VersionSourceInterface):
 
         return "".join(parts)
 
-    @staticmethod
-    def python_version_to_node(version: str) -> str:
+    def python_version_to_node(self, version: str) -> str:
         # NodeJS version strings are a near superset of Python version strings
         match = re.match(
             r"^\s*" + PYTHON_VERSION_PATTERN + r"\s*$",
