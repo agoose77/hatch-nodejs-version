@@ -36,24 +36,9 @@ class TestVersion:
             "1.4.5rc0.post1+bad_",
         ],
     )
-    def test_parse_python_incorrect(self, project, python_version):
-        # Create a simple project
-        (project / "pyproject.toml").write_text(
-            """
-[build-system]
-requires = ["hatchling", "hatch-vcs"]
-build-backend = "hatchling.build"
-[project]
-name = "my-app"
-dynamic = ["version"]
-[tool.hatch.version]
-source = "nodejs"
- """
-        )
-        config = {}
-        version_source = NodeJSVersionSource(project, config=config)
+    def test_parse_python_incorrect(self, python_version):
         with pytest.raises(ValueError, match=".* did not match regex"):
-            version_source.python_version_to_node(python_version)
+            NodeJSVersionSource.python_version_to_node(python_version)
 
     @pytest.mark.parametrize(
         "node_version",
@@ -66,24 +51,9 @@ source = "nodejs"
             "1.4.5-rc0.post1+bad_",
         ],
     )
-    def test_parse_node_incorrect(self, project, node_version):
-        # Create a simple project
-        (project / "pyproject.toml").write_text(
-            """
-[build-system]
-requires = ["hatchling", "hatch-vcs"]
-build-backend = "hatchling.build"
-[project]
-name = "my-app"
-dynamic = ["version"]
-[tool.hatch.version]
-source = "nodejs"
- """
-        )
-        config = {}
-        version_source = NodeJSVersionSource(project, config=config)
+    def test_parse_node_incorrect(self, node_version):
         with pytest.raises(ValueError, match=".* did not match regex"):
-            version_source.node_version_to_python(node_version)
+            NodeJSVersionSource.node_version_to_python(node_version)
 
     @pytest.mark.parametrize(
         "node_version, python_version",
