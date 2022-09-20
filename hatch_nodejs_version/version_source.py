@@ -4,44 +4,68 @@
 import json
 import os
 import re
-from hatchling.version.source.plugin.interface import VersionSourceInterface
 
+from hatchling.version.source.plugin.interface import VersionSourceInterface
 
 # The Python-aware NodeJS version regex
 # This is very similar to `packaging.version.VERSION_PATTERN`, with a few changes:
 # - Don't accept underscores
-# - Only support three-component release and prerelease segments
+# - Only support four-component release, prerelease, and build segments
 # - Require - to indicate prerelease
 NODE_VERSION_PATTERN = r"""
-    (?P<major>[0-9]+)                                 # major
+    (?P<major>[0-9]+)                             # major
     \.
-    (?P<minor>[0-9]+)                                 # minor
+    (?P<minor>[0-9]+)                             # minor
     \.
-    (?P<patch>[0-9]+)                                 # patch
-    (?P<pre>                                          # pre-release
+    (?P<patch>[0-9]+)                             # patch
+    (?P<pre>                                      # pre-release
         -
         (?P<pre_l>(a|b|c|rc|alpha|beta|pre|preview))
         [-\.]?
         (?P<pre_n>[0-9]+)?
     )?
+    (?:
+       \+
+       (?P<build>
+            [0-9A-Za-z][0-9A-Za-z-_]*            # non-hyphen/dash leading identifier
+            (?:
+                (?:\.[0-9A-Za-z-_]+)*            # dot-prefixed identifier segments
+            \.                                   # Final dot-delimited segment
+                [0-9A-Za-z_-]*                   # non-hyphen/dash trailing identifier
+                [0-9A-Za-z]
+            )?
+        )
+   )?
 """
 
 # The NodeJS-aware Python version regex
 # This is very similar to `packaging.version.VERSION_PATTERN`, with a few changes:
-# - Only support three-component release and prerelease segments
+# - Only support four-component release, prerelease, and build segments
 PYTHON_VERSION_PATTERN = r"""
    v?
    (?:
-       (?P<major>[0-9]+)                                 # major
+       (?P<major>[0-9]+)                           # major
        \.
-       (?P<minor>[0-9]+)                                 # minor
+       (?P<minor>[0-9]+)                           # minor
        \.
-       (?P<patch>[0-9]+)                                 # patch
-       (?P<pre>                                          # pre-release
+       (?P<patch>[0-9]+)                           # patch
+       (?P<pre>                                    # pre-release
            [-_\.]?
-           (?P<pre_l>(a|b|c|rc|alpha|beta|pre|preview))
+           (?P<pre_l>(alpha|beta|preview|a|b|c|rc|pre))
            [-_\.]?
            (?P<pre_n>[0-9]+)?
+       )?
+       (?:
+           \+
+           (?P<local>
+                [0-9A-Za-z][0-9A-Za-z-_]*          # non-hyphen/dash leading identifier
+                (?:
+                    (?:\.[0-9A-Za-z-_]+)*          # dot-prefixed identifier
+                    \.
+                    [0-9A-Za-z_-]*                 # non-hyphen/dash trailing identifier
+                    [0-9A-Za-z]
+                )?
+            )
        )?
    )
 """
@@ -74,6 +98,9 @@ class NodeJSVersionSource(VersionSourceInterface):
             else:
                 parts.append("{pre_l}{pre_n}".format_map(match))
 
+        if match["build"]:
+            parts.append("+{build}".format_map(match))
+
         return "".join(parts)
 
     @staticmethod
@@ -95,6 +122,8 @@ class NodeJSVersionSource(VersionSourceInterface):
             else:
                 parts.append("-{pre_l}{pre_n}".format_map(match))
 
+        if match["local"]:
+            parts.append("+{local}".format_map(match))
         return "".join(parts)
 
     @property
