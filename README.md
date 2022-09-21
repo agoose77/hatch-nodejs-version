@@ -8,9 +8,9 @@
 This package provides two Hatch plugins:
 
 - [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/) that reads/writes the package version
-  from the `version` field of the NodeJS `package.json` file.
+  from the `version` field of the Node.js `package.json` file.
 - [metadata hook plugin](https://hatch.pypa.io/latest/plugins/metadata-hook/) that reads PEP 621 metadata from the
-  NodeJS `package.json` file.
+  Node.js `package.json` file.
 
 **Table of Contents**
 
@@ -68,7 +68,7 @@ Meanwhile, [PEP 440](https://peps.python.org/pep-0440/#version-scheme) defines:
 - `post-release`
 - `dev-release`
 
-In order to ensure round-trip support, and ensure semantic consistency between NodeJS and Python, this plugin only
+In order to ensure round-trip support, and ensure semantic consistency between Node.js and Python, this plugin only
 accepts the common version parts:
 
 - `major`
@@ -102,14 +102,14 @@ The [metadata hook plugin](https://hatch.pypa.io/dev/plugins/metadata-hook/refer
 
 ### Metadata hook options
 
-| Option                        | Type            | Default          | Description                                                                                                 |
-|-------------------------------|-----------------|------------------|-------------------------------------------------------------------------------------------------------------|
-| `path`                        | `str`           | `"package.json"` | Relative path to the `package.json` file.                                                                   |
-| `fields`                      | `list` of `str` | `None`           | Optional list of `pyproject.toml` fields to take from their counterparts in `package.json`.                 |
-| `contributors-as-maintainers` | `bool`          | `True`           | Whether contributors in `package.json` should be considered maintainers (otherwise, treat them as authors). |
-| `bugs-label`                  | `str`           | `"Bug Tracker"`  | The key in the URLs table of `pyproject.toml` that is populated by the `bugs` field in `package.json`       |
-| `homepage-label`              | `str`           | `"Homepage"`     | The key in the URLs table of `pyproject.toml` that is populated by the `homepage` field in `package.json`   |
-| `repository-label`            | `str`           | `"Repository"`   | The key in the URLs table of `pyproject.toml` that is populated by the `repository` field in `package.json` |
+| Option                        | Type            | Default          | Description                                                                                                                               |
+|-------------------------------|-----------------|------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| `path`                        | `str`           | `"package.json"` | Relative path to the `package.json` file.                                                                                                 |
+| `fields`                      | `list` of `str` | `None`           | Optional list of `pyproject.toml` fields to take from their counterparts in `package.json`. If missing, take all of the available fields. |
+| `contributors-as-maintainers` | `bool`          | `True`           | Whether contributors in `package.json` should be considered maintainers (otherwise, treat them as authors).                               |
+| `bugs-label`                  | `str`           | `"Bug Tracker"`  | The key in the URLs table of `pyproject.toml` that is populated by the `bugs` field in `package.json`                                     |
+| `homepage-label`              | `str`           | `"Homepage"`     | The key in the URLs table of `pyproject.toml` that is populated by the `homepage` field in `package.json`                                 |
+| `repository-label`            | `str`           | `"Repository"`   | The key in the URLs table of `pyproject.toml` that is populated by the `repository` field in `package.json`                               |
 
 ## License
 
