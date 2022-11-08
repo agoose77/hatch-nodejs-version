@@ -48,6 +48,27 @@ The [version source plugin](https://hatch.pypa.io/latest/plugins/version-source/
     source = "nodejs"
     ```
 
+You can optionally dump the version in a Python file by specifying the `version-file` option:
+
+- ***pyproject.toml***
+
+    ```toml
+    [tool.hatch.version]
+    source = "nodejs"
+    version-file = "_version.py"
+    ```
+
+- ***hatch.toml***
+
+    ```toml
+    [version]
+    source = "nodejs"
+    version-file = "_version.py"
+    ```
+
+The default template is defined in [version_source.py](https://github.com/agoose77/hatch-nodejs-version/blob/master/hatch_nodejs_version/version_source.py) plugin. But you can override it using the `template` option.
+The only variable available in the template is `version` that is the Python version string.
+
 ### Semver
 
 The semver specification defines the following version sections:
