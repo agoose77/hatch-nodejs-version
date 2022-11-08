@@ -138,7 +138,7 @@ source = "nodejs"
         "node_version, python_version",
         GOOD_NODE_PYTHON_VERSIONS,
     )
-    @pytest.mark.parametrize("version_file", [None, "_version.py"])
+    @pytest.mark.parametrize("version_file", [None, "my_app/_version.py"])
     @pytest.mark.parametrize(
         "template, version_var, expected_version",
         [
@@ -188,12 +188,12 @@ source = "nodejs"
             config["template"] = template
         version_source = NodeJSVersionSource(project, config=config)
         version_data = version_source.get_version_data()
-        current_content = set(project.iterdir())
+        current_content = set((project / "my_app").iterdir())
         version_source.set_version(python_version, version_data)
 
         if version_file is None:
             # Check no new file was created
-            assert len(current_content.difference(project.iterdir())) == 0
+            assert len(current_content.difference((project / "my_app").iterdir())) == 0
         else:
             python_code = (project / version_file).read_text()
             local_vars = {}
