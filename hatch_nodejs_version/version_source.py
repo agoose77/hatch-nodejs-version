@@ -156,9 +156,15 @@ class NodeJSVersionSource(VersionSourceInterface):
         if not os.path.isfile(path):
             raise OSError(f"file does not exist: {self.path}")
 
+        # Read the original file so we can see if it has a trailing
+        # newline character.
         with open(path, "r") as f:
-            data = json.load(f)
+            raw_data = f.read()
+
+        data = json.loads(raw_data)
 
         data["version"] = self.python_version_to_node(version)
         with open(path, "w") as f:
             json.dump(data, f, indent=4)
+            if raw_data.endswith('\n'):
+                f.write('\n')
