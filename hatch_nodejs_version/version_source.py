@@ -161,8 +161,7 @@ class NodeJSVersionSource(VersionSourceInterface):
         with open(path, "r") as f:
             raw_data = f.read()
 
-        with open(path, "r") as f:
-            data = json.load(f)
+        data = json.loads(raw_data)
 
         data["version"] = self.python_version_to_node(version)
         with open(path, "w") as f:
