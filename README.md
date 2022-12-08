@@ -68,7 +68,7 @@ Meanwhile, [PEP 440](https://peps.python.org/pep-0440/#version-scheme) defines:
 - `post-release`
 - `dev-release`
 
-In order to ensure round-trip support, and ensure semantic consistency between Node.js and Python, this plugin only
+In order to ensure contentful round-trip support, and ensure semantic consistency between Node.js and Python, this plugin only
 accepts the common version parts:
 
 - `major`
@@ -77,6 +77,9 @@ accepts the common version parts:
 - `pre-release`
 
 e.g. `1.2.3-rc0`.
+
+Note that where normalisation occurs, the round-trip result will differ. This can be avoided by careful choice of the delimeters e.g. `-.`.
+
 
 ### Version source options
 
