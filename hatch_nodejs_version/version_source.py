@@ -7,6 +7,19 @@ import re
 
 from hatchling.version.source.plugin.interface import VersionSourceInterface
 
+# Python to semver pre-release spelling
+# See https://peps.python.org/pep-0440/#pre-release-spelling
+CANONICAL_MAPPING = {
+    "alpha": "alpha",
+    "a": "alpha",
+    "beta": "beta",
+    "b": "beta",
+    "rc": "rc",
+    "c": "rc",
+    "pre": "rc",
+    "preview": "rc",
+}
+
 # The Python-aware NodeJS version regex
 # This is very similar to `packaging.version.VERSION_PATTERN`, with a few changes:
 # - Don't accept underscores
@@ -78,6 +91,7 @@ class NodeJSVersionSource(VersionSourceInterface):
         super().__init__(*args, **kwargs)
 
         self.__path = None
+        self.__canonical = None
 
     @property
     def path(self):
@@ -93,6 +107,13 @@ class NodeJSVersionSource(VersionSourceInterface):
             self.__path = os.fspath(version_file)
 
         return self.__path
+
+    @property
+    def canonical(self) -> bool:
+        """Whether the Node pre-release version is converted or not."""
+        if self.__canonical is None:
+            self.__canonical = self.config.get("canonical", False)
+        return self.__canonical
 
     @staticmethod
     def node_version_to_python(version: str) -> str:
@@ -119,7 +140,7 @@ class NodeJSVersionSource(VersionSourceInterface):
         return "".join(parts)
 
     @staticmethod
-    def python_version_to_node(version: str) -> str:
+    def python_version_to_node(version: str, canonical: bool = False) -> str:
         # NodeJS version strings are a near superset of Python version strings
         match = re.match(
             r"^\s*" + PYTHON_VERSION_PATTERN + r"\s*$",
@@ -132,10 +153,16 @@ class NodeJSVersionSource(VersionSourceInterface):
         parts = ["{major}.{minor}.{patch}".format_map(match)]
 
         if match["pre"]:
-            if match["pre_n"] is None:
-                parts.append("-{pre_l}".format_map(match))
+            pre = "-"
+            if canonical:
+                pre += CANONICAL_MAPPING.get(match["pre_l"], match["pre_l"])
             else:
-                parts.append("-{pre_l}{pre_n}".format_map(match))
+                pre += match["pre_l"]
+            if match["pre_n"] is None:
+                parts.append(pre)
+            else:
+                pre_n = match["pre_n"]
+                parts.append(f"{pre}.{pre_n}")
 
         if match["local"]:
             parts.append("+{local}".format_map(match))
@@ -162,8 +189,8 @@ class NodeJSVersionSource(VersionSourceInterface):
             raw_data = f.read()
 
         data = json.loads(raw_data)
-
-        data["version"] = self.python_version_to_node(version)
+        print(self.__canonical, version, self.python_version_to_node(version, self.canonical))
+        data["version"] = self.python_version_to_node(version, self.canonical)
         with open(path, "w") as f:
             json.dump(data, f, indent=4)
             if raw_data.endswith('\n'):

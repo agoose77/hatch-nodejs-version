@@ -9,18 +9,34 @@ from hatch_nodejs_version.version_source import NodeJSVersionSource
 
 GOOD_NODE_PYTHON_VERSIONS = [
     ("1.4.5", "1.4.5"),
-    ("1.4.5-a0", "1.4.5a0"),
+    ("1.4.5-a.0", "1.4.5a0"),
     ("1.4.5-a", "1.4.5a"),
-    ("1.4.5-b0", "1.4.5b0"),
-    ("1.4.5-c1", "1.4.5c1"),
-    ("1.4.5-rc0", "1.4.5rc0"),
-    ("1.4.5-alpha0", "1.4.5alpha0"),
-    ("1.4.5-beta0", "1.4.5beta0"),
-    ("1.4.5-pre9", "1.4.5pre9"),
-    ("1.4.5-preview0", "1.4.5preview0"),
-    ("1.4.5-preview0+build1.0.0", "1.4.5preview0+build1.0.0"),
-    ("1.4.5-preview0+build-1.0.0", "1.4.5preview0+build-1.0.0"),
-    ("1.4.5-preview0+good-1_0.0", "1.4.5preview0+good-1_0.0"),
+    ("1.4.5-b.0", "1.4.5b0"),
+    ("1.4.5-c.1", "1.4.5c1"),
+    ("1.4.5-rc.0", "1.4.5rc0"),
+    ("1.4.5-alpha.0", "1.4.5alpha0"),
+    ("1.4.5-beta.0", "1.4.5beta0"),
+    ("1.4.5-pre.9", "1.4.5pre9"),
+    ("1.4.5-preview.0", "1.4.5preview0"),
+    ("1.4.5-preview.0+build1.0.0", "1.4.5preview0+build1.0.0"),
+    ("1.4.5-preview.0+build-1.0.0", "1.4.5preview0+build-1.0.0"),
+    ("1.4.5-preview.0+good-1_0.0", "1.4.5preview0+good-1_0.0"),
+]
+
+GOOD_CANONICAL_NODE_PYTHON_VERSIONS = [
+    ("1.4.5", "1.4.5"),
+    ("1.4.5-alpha.0", "1.4.5a0"),
+    ("1.4.5-alpha", "1.4.5a"),
+    ("1.4.5-beta.0", "1.4.5b0"),
+    ("1.4.5-rc.1", "1.4.5c1"),
+    ("1.4.5-rc.0", "1.4.5rc0"),
+    ("1.4.5-alpha.0", "1.4.5alpha0"),
+    ("1.4.5-beta.0", "1.4.5beta0"),
+    ("1.4.5-rc.9", "1.4.5pre9"),
+    ("1.4.5-rc.0", "1.4.5preview0"),
+    ("1.4.5-rc.0+build1.0.0", "1.4.5preview0+build1.0.0"),
+    ("1.4.5-rc.0+build-1.0.0", "1.4.5preview0+build-1.0.0"),
+    ("1.4.5-rc.0+good-1_0.0", "1.4.5preview0+good-1_0.0"),
 ]
 
 
@@ -75,8 +91,6 @@ build-backend = "hatchling.build"
 [project]
 name = "my-app"
 dynamic = ["version"]
-[tool.hatch.version]
-source = "nodejs"
  """
         )
         package_json = "package.json" if alt_package_json is None else alt_package_json
@@ -132,3 +146,46 @@ source = "nodejs"
 
         written_package = json.loads((project / package_json).read_text())
         assert written_package["version"] == node_version
+
+    @pytest.mark.parametrize(
+        "node_version, python_version",
+        GOOD_CANONICAL_NODE_PYTHON_VERSIONS,
+    )
+    @pytest.mark.parametrize(
+        "alt_package_json",
+        [None, "package-other.json"],
+    )
+    def test_canonical_version_to_package(
+        self, project, node_version, python_version, alt_package_json
+    ):
+        package_json = "package.json" if alt_package_json is None else alt_package_json
+        (project / "pyproject.toml").write_text(
+            """
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+[project]
+name = "my-app"
+dynamic = ["version"]
+[tool.hatch.version]
+source = "nodejs"
+canonical = True
+"""
+        )
+        (project / package_json).write_text(
+            """
+{
+  "name": "my-app",
+  "version": "0.0.0"
+}
+"""
+        )
+        config = {} if alt_package_json is None else {"path": alt_package_json}
+        config["canonical"] = True
+        version_source = NodeJSVersionSource(project, config=config)
+        version_data = version_source.get_version_data()
+        version_source.set_version(python_version, version_data)
+
+        written_package = json.loads((project / package_json).read_text())
+        assert written_package["version"] == node_version
+
