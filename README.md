@@ -83,9 +83,10 @@ Note that where normalisation occurs, the round-trip result will differ. This ca
 
 ### Version source options
 
-| Option        | Type | Default       | Description                                |
-|---------------| --- |---------------|--------------------------------------------|
-| `path`        | `str` | `package.json` | Relative path to the `package.json` file. |
+| Option        | Type  | Default        | Description                                         |
+|---------------|-------|----------------|-----------------------------------------------------|
+| `path`        | `str` | `package.json` | Relative path to the `package.json` file.           |
+| `canonical`   | `str` | `False`        | Whether to convert Python prerelease string or not. |
 
 ## Metadata hook
 
