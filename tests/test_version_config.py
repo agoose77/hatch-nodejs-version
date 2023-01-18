@@ -60,11 +60,13 @@ class TestVersion:
         "node_version",
         [
             "1.4",
+            "1.4.5a.0",
             "1.4.5a0",
-            "1.4.5-c0.post1",
-            "1.4.5-rc0.post1.dev2",
-            "1.4.5-rc0.post1+-bad",
-            "1.4.5-rc0.post1+bad_",
+            "1.4.5-a0",
+            "1.4.5-c.0.post1",
+            "1.4.5-rc.0.post1.dev2",
+            "1.4.5-rc.0.post1+-bad",
+            "1.4.5-rc.0.post1+bad_",
         ],
     )
     def test_parse_node_incorrect(self, node_version):

@@ -9,7 +9,7 @@ from hatchling.version.source.plugin.interface import VersionSourceInterface
 
 # Python to semver pre-release spelling
 # See https://peps.python.org/pep-0440/#pre-release-spelling
-CANONICAL_MAPPING = {
+PEP_440_TO_SEMVER_PRERELEASE = {
     "alpha": "alpha",
     "a": "alpha",
     "beta": "beta",
@@ -34,8 +34,7 @@ NODE_VERSION_PATTERN = r"""
     (?P<pre>                                      # pre-release
         -
         (?P<pre_l>(a|b|c|rc|alpha|beta|pre|preview))
-        [-\.]?
-        (?P<pre_n>[0-9]+)?
+        (\.(?P<pre_n>[0-9]+))?
     )?
     (?:
        \+
@@ -112,7 +111,7 @@ class NodeJSVersionSource(VersionSourceInterface):
     def canonical(self) -> bool:
         """Whether the Node pre-release version is converted or not."""
         if self.__canonical is None:
-            self.__canonical = self.config.get("canonical", False)
+            self.__canonical = self.config.get("canonical", True)
         return self.__canonical
 
     @staticmethod
@@ -155,7 +154,7 @@ class NodeJSVersionSource(VersionSourceInterface):
         if match["pre"]:
             pre = "-"
             if canonical:
-                pre += CANONICAL_MAPPING.get(match["pre_l"], match["pre_l"])
+                pre += PEP_440_TO_SEMVER_PRERELEASE.get(match["pre_l"], match["pre_l"])
             else:
                 pre += match["pre_l"]
             if match["pre_n"] is None:

@@ -76,17 +76,17 @@ accepts the common version parts:
 - `patch`
 - `pre-release`
 
-e.g. `1.2.3-rc0`.
+e.g. `1.2.3-rc.0`.
 
 Note that where normalisation occurs, the round-trip result will differ. This can be avoided by careful choice of the delimeters e.g. `-.`.
 
 
 ### Version source options
 
-| Option        | Type  | Default        | Description                                         |
-|---------------|-------|----------------|-----------------------------------------------------|
-| `path`        | `str` | `package.json` | Relative path to the `package.json` file.           |
-| `canonical`   | `str` | `False`        | Whether to convert Python prerelease string or not. |
+| Option        | Type   | Default        | Description                                         |
+|---------------|--------|----------------|-----------------------------------------------------|
+| `path`        | `str`  | `package.json` | Relative path to the `package.json` file.           |
+| `canonical`   | `bool` | `True`         | Whether to convert Python prerelease string or not. |
 
 ## Metadata hook
 
