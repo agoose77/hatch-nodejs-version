@@ -189,7 +189,6 @@ class NodeJSVersionSource(VersionSourceInterface):
             raw_data = f.read()
 
         data = json.loads(raw_data)
-        print(self.__canonical, version, self.python_version_to_node(version, self.canonical))
         data["version"] = self.python_version_to_node(version, self.canonical)
         with open(path, "w") as f:
             json.dump(data, f, indent=4)
