@@ -142,6 +142,7 @@ source = "nodejs"
 """
         )
         config = {} if alt_package_json is None else {"path": alt_package_json}
+        config["canonical"] = False
         version_source = NodeJSVersionSource(project, config=config)
         version_data = version_source.get_version_data()
         version_source.set_version(python_version, version_data)

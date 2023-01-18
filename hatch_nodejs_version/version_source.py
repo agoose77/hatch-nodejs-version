@@ -139,7 +139,7 @@ class NodeJSVersionSource(VersionSourceInterface):
         return "".join(parts)
 
     @staticmethod
-    def python_version_to_node(version: str, canonical: bool = False) -> str:
+    def python_version_to_node(version: str, canonical: bool = True) -> str:
         # NodeJS version strings are a near superset of Python version strings
         match = re.match(
             r"^\s*" + PYTHON_VERSION_PATTERN + r"\s*$",
