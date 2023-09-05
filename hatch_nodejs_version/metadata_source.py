@@ -7,11 +7,11 @@ import json
 import os.path
 import re
 import urllib.parse
-from typing import Any
+from typing import Any, Union
 
 from hatchling.metadata.plugin.interface import MetadataHookInterface
 
-AUTHOR_PATTERN = r"^([^<(]+?)?[ \t]*(?:<([^>(]+?)>)?[ \t]*(?:\(([^)]+?)\)|$)"
+AUTHOR_PATTERN = r"^(?P<name>[^<(]+?)?[ \t]*(?:<(?P<email>[^>(]+?)>)?[ \t]*(?:\((?P<url>[^)]+?)\)|$)"
 REPOSITORY_PATTERN = r"^(?:(gist|bitbucket|gitlab|github):)?(.*?)$"
 REPOSITORY_TABLE = {
     "gitlab": "https://gitlab.com",
@@ -137,19 +137,24 @@ class NodeJSMetadataHook(MetadataHookInterface):
         return bugs["url"]
 
     def _parse_person(self, person: dict[str, str]) -> dict[str, str]:
-        if {"url", "email"} & person.keys():
-            result = {"name": person["name"]}
-            if "email" in person:
-                result["email"] = person["email"]
+        result = {}
+        if isinstance(person, dict):
+            if {"url", "email"} & person.keys():
+                result["name"] = person["name"]
+                if "email" in person:
+                    result["email"] = person["email"]
+                return result
+            else:
+                author = person["name"]
         else:
-            match = re.match(AUTHOR_PATTERN, person["name"])
-            if match is None:
-                raise ValueError(f"Invalid author name: {person['name']}")
-            name, email, _ = match.groups()
-            result = {"name": name}
-            if email is not None:
-                result["email"] = email
-
+            author = person
+        match = re.match(AUTHOR_PATTERN, author)
+        if match is None:
+            raise ValueError(f"Invalid author name: {author}")
+        name, email, _ = match.groups()
+        result = {"name": name}
+        if email is not None:
+            result["email"] = email
         return result
 
     def _parse_repository(self, repository: str | dict[str, str]) -> str:
