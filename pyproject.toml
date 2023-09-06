@@ -51,6 +51,3 @@ profile = "black"
 dev = [
     "pytest>=7.0.1",
 ]
-
-[tool.jupyter-releaser.options]
-version_cmd = "hatch version"
