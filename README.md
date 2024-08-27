@@ -14,7 +14,6 @@ This package provides two Hatch plugins:
 
 **Table of Contents**
 
-- [Installation](#installation)
 - [Global dependency](#global-dependency)
 - [Version source](#version-source)
 - [Metadata hook](#metadata-hook)
