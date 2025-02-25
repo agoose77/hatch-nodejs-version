@@ -20,7 +20,7 @@ NODE_VERSION_PATTERN = r"""
     (?P<patch>[0-9]+)                             # patch
     (?P<pre>                                      # pre-release
         -
-        (?P<pre_l>(a|b|c|rc|alpha|beta|pre|preview))
+        (?P<pre_l>(a|b|c|rc|alpha|beta|pre|preview|dev))
         [-\.]?
         (?P<pre_n>[0-9]+)?
     )?
@@ -51,7 +51,7 @@ PYTHON_VERSION_PATTERN = r"""
        (?P<patch>[0-9]+)                           # patch
        (?P<pre>                                    # pre-release
            [-_\.]?
-           (?P<pre_l>(alpha|beta|preview|a|b|c|rc|pre))
+           (?P<pre_l>(alpha|beta|preview|a|b|c|rc|pre|dev))
            [-_\.]?
            (?P<pre_n>[0-9]+)?
        )?
@@ -108,6 +108,10 @@ class NodeJSVersionSource(VersionSourceInterface):
         parts = ["{major}.{minor}.{patch}".format_map(match)]
 
         if match["pre"]:
+            if match["pre_l"] == "dev":
+                # pep440 separates dev with '.'
+                # unlike release labels
+                parts.append(".")
             if match["pre_n"] is None:
                 parts.append("{pre_l}".format_map(match))
             else:
