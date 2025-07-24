@@ -7,11 +7,13 @@ import json
 import os.path
 import re
 import urllib.parse
-from typing import Any, Union
+from typing import Any
 
 from hatchling.metadata.plugin.interface import MetadataHookInterface
 
-AUTHOR_PATTERN = r"^(?P<name>[^<(]+?)?[ \t]*(?:<(?P<email>[^>(]+?)>)?[ \t]*(?:\((?P<url>[^)]+?)\)|$)"
+AUTHOR_PATTERN = (
+    r"^(?P<name>[^<(]+?)?[ \t]*(?:<(?P<email>[^>(]+?)>)?[ \t]*(?:\((?P<url>[^)]+?)\)|$)"
+)
 REPOSITORY_PATTERN = r"^(?:(gist|bitbucket|gitlab|github):)?(.*?)$"
 REPOSITORY_TABLE = {
     "gitlab": "https://gitlab.com",
