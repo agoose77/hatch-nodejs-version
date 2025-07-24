@@ -23,9 +23,6 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
 ]
 dynamic = ["version"]
-
-[project.optional-dependencies]
-
 [project.entry-points.hatch]
 nodejs = "hatch_nodejs_version.hooks"
 
@@ -33,6 +30,9 @@ nodejs = "hatch_nodejs_version.hooks"
 Homepage = "https://github.com/agoose77/hatch-nodejs-version"
 "Issue Tracker" = "https://github.com/agoose77/hatch-nodejs-version/issues"
 "Source Code" = "https://github.com/agoose77/hatch-nodejs-version"
+
+[dependency-groups]
+test = ["pytest>=7.0"]
 
 [tool.hatch.version]
 path = "hatch_nodejs_version/_version.py"
