@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 2022-present Angus Hollands <goosey15@gmail.com>
 #
 # SPDX-License-Identifier: MIT
-import pytest
 import json
+
+import pytest
 
 from hatch_nodejs_version.metadata_source import NodeJSMetadataHook
 
@@ -170,9 +171,11 @@ class TestMetadata:
     def test_authors_accepted_as_strings(self, project):
         original_package_content = json.loads(TRIVIAL_PACKAGE_CONTENTS)
         updated_package_content = original_package_content.copy()
-        author_as_string = f"{original_package_content['author']['name']} " \
-                           f"<{original_package_content['author']['email']}>"
-        updated_package_content['author'] = author_as_string
+        author_as_string = (
+            f"{original_package_content['author']['name']} "
+            f"<{original_package_content['author']['email']}>"
+        )
+        updated_package_content["author"] = author_as_string
         (project / "pyproject.toml").write_text(TRIVIAL_PYPROJECT_CONTENTS)
         (project / "package.json").write_text(json.dumps(updated_package_content))
 
@@ -181,4 +184,3 @@ class TestMetadata:
         metadata_source = NodeJSMetadataHook(project, config=config)
         metadata_source.update(metadata)
         assert metadata == TRIVIAL_EXPECTED_METADATA
-

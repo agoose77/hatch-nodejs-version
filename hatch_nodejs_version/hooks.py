@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: MIT
 from hatchling.plugin import hookimpl
 
-from .version_source import NodeJSVersionSource
 from .metadata_source import NodeJSMetadataHook
+from .version_source import NodeJSVersionSource
 
 
 @hookimpl
