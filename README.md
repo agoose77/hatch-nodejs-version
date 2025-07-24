@@ -74,6 +74,7 @@ accepts the common version parts:
 - `minor`
 - `patch`
 - `pre-release`
+- `dev-release`
 
 e.g. `1.2.3-rc0`.
 
