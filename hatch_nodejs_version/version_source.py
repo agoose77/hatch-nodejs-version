@@ -166,5 +166,5 @@ class NodeJSVersionSource(VersionSourceInterface):
         data["version"] = self.python_version_to_node(version)
         with open(path, "w") as f:
             json.dump(data, f, indent=4)
-            if raw_data.endswith('\n'):
-                f.write('\n')
+            if raw_data.endswith("\n"):
+                f.write("\n")
