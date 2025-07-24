@@ -7,20 +7,21 @@ name = "hatch-nodejs-version"
 description = "Hatch plugin for versioning from a package.json file"
 authors = [
     {name = "Angus Hollands", email = "goosey15@gmail.com"},
+    {name = "Frédéric Collonval" },
 ]
 dependencies = [
     "hatchling>=0.21.0"
 ]
-requires-python = ">= 3.7"
+requires-python = ">= 3.9"
 readme = "README.md"
 license = {text = "MIT"}
 classifiers = [
   "Framework :: Hatch",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
 dynamic = ["version"]
 [project.entry-points.hatch]
